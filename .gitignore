@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+out/*
+gee_python/python_env
+gee_python/out
+.ipynb_checkpoints/*

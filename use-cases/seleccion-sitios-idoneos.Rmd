@@ -1,0 +1,35 @@
+---
+title: "Untitled"
+output: html_document
+date: '2022-11-22'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Criterios técnicos:
+
+- Distribución espacial de las estaciones (ONAMET, INDRHI, REDDOM) y restantes (INTEC, JAD, ISA, CNCCMDL, CAEI, PUCMM, ...)
+
+- Superficies climáticas (cuantativas) y de escenarios (cuantitativas) (con estas dos se necesitaría definir criterio de heterogeneidad en función de las variables específicas), tipos de clima (cualitativa, buscar el método de heterogeneidad de Nowosad)
+
+- Uso y cobertura (ESA, GFC de Hansen)
+
+- Asentamientos (distancia), a 1 km de distancia 0 y 1 a menos de 1 km
+
+- Rumbo respecto del eje de la cordillera central
+
+- Global Habitat Heterogeneity
+
+- Geomórfonos / landforms (heterogeneidad)
+
+- Slope
+
+- Heterogeneidad
+
+Nota: dos posibles estrategias: con número de estaciones definido (restringido), o sin definirlo (sin restricción)
+
+Criterios de accesibilidad al dato
+
+- Accesibilidad
