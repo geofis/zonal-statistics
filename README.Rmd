@@ -1,8 +1,8 @@
 ---
 title: "Estadística zonal multipropósito sobre información geoespacial de República Dominicana, usando Google Earth Engine, Python y R"
 output:
-  bookdown::github_document2
-  # bookdown::html_document2
+  # bookdown::github_document2
+  bookdown::html_document2
 editor_options: 
   chunk_output_type: console
 bibliography: ref/biblio.bib
