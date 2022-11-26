@@ -4,4 +4,4 @@
 .Ruserdata
 gee_python/python_env
 gee_python/out
-.ipynb_checkpoints/*
+gee_python/.ipynb_checkpoints/*

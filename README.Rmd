@@ -1,11 +1,13 @@
 ---
-title: "Estadística zonal de información geoespacial de República Dominicana, usando Google Earth Engine, Python y R"
-date: 10-11-2022
-output: github_document
+title: "Estadística zonal multipropósito sobre información geoespacial de República Dominicana, usando Google Earth Engine, Python y R"
+output:
+  bookdown::github_document2
+  # bookdown::html_document2
 editor_options: 
   chunk_output_type: console
 bibliography: ref/biblio.bib
 csl: ref/apa.csl
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -16,10 +18,7 @@ knitr::opts_chunk$set(echo = T, cache = F, eval = F, out.width = '100%', dpi = 3
 res <- 4:7
 ```
 
-
-José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD) <br>
-Email: jmartinez19\@uasd.edu.do <br>
-GitHUb: \@geofis
+José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD) <br> Email: jmartinez19\@uasd.edu.do <br> GitHub: \@geofis <br> `r Sys.Date()` <br> Reportar errores a mi dirección de correo, o creando un *issue* en el repo.
 
 <!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6991441.svg)](https://doi.org/10.5281/zenodo.6991441) -->
 
@@ -27,58 +26,140 @@ GitHUb: \@geofis
 
 # Introducción
 
-> Si necesitas descargar los archivos reusltantes, visita [esta ruta](out/) o descarga el comprimido del repo [aquí]() <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<!-- > Si necesitas descargar los archivos reusltantes, visita [esta ruta](out/) o descarga el comprimido del repo [aquí]() -->
 
-> Si quieres consultar el código con el que generé los archivos resultantes del *spatial binning*, ve [aquí](#archivos-resultantes)
+> Si quieres consultar el código con el que generé los archivos resultantes del *spatial binning*, visita [esta](#cloud-processing-gee-and-post-processing-in-r) sección.
 
-Las variables ambientales o de hábitat, son esenciales **en estudios de ecología numérica y en geomorfología**. Este tipo de variables abarcan distintos atributos del ambiente, entre los que destacan la topografía, geomorfología, geología, climatología, la población humana o la densidad de carreteras. Asimismo, en décadas recientes, se han incorporado a los análisis ecológicos, atributos de hábitat colectados por medio de sensores a bordo de satélites de observación de la Tierra (e.g. reflectancia de la superficie del planeta por sensores pasivos, o retrodispersión por sensores activos).
+`r if(knitr::opts_knit$get("rmarkdown.pandoc.to") == 'gfm-yaml_metadata_block') 'Versión HTML (quizá más legible), [aquí](https://geofis.github.io/zonal-statistics/README.html)'`
 
-Varias plataformas en la nube han creado catálogos de información ambiental de escala planetaria, la cual es a su vez producida, comúnmente, por grupos de investigación y académicos de diversos países. Asimismo, las plataformas en la nube más populares, ofrecen planes gratuitos de acceso a los datos y a sus recursos de hardware, lo cual supone una mejora significativa en cuanto a disponibilidad de datos y medios. Esta revolución ha impulsado el acceso a un nutrido catálogo de datos ambientales, ha favorecido el desarrollo de nuevas líneas de estudio en ecología (y geografía física en general), y ha permitido resolver problemas de investigación que en el pasado jamás se habría pensado que podrían resolverse.
+`r if(knitr::opts_knit$get("rmarkdown.pandoc.to") == 'latex') 'Versión HTML (quizá más legible), [aquí](https://geofis.github.io/zonal-statistics/README.html)'`
 
-Plataformas como el Earth Engine de Google (Google Earth Engine o simplemente "GEE"), la Planetary Computer de Microsoft, los recursos de Maxar y de Planet [@microsoft2022; @google2022; @planetlabspbc2022; @maxartechnologies2022], ofrecen datos en forma de superficies continuas (e.g., imágenes ráster) o colecciones de capas apiladas, las cuales deben procesarse previamente para consolidarlas en una base de referencia común antes de realizar cualquier estudio.
 
-En República Dominicana, una parte de la información de ámbito nacional, ha permanecido poco accesible al público, y su aprovechamiento en el ámbito de la investigación ha sido limitado. Por otra parte, la generación de datos nacionales, se ha caracterizado en muchos por emplear metodologías no reproducibles y, en algunos casos, no declaradas. A esto se suma el hecho que, buena parte de la información que sí es accesible, fue generada con referencia a unidades administrativas "al uso", abarcando en muchos casos territorios heterogéneos. Otra dificultad asociada es el hecho de que diversos estudios han producido mapas sin tener en cuenta potenciales usos posteriores, por lo que su reaprovechamiento requiere de un esfuerzo previo de depuración y normalización.
+En ecología numérica, y en biogeografía, se suele denominar "variables ambientales" o "variables de hábitat", a un conjunto de atributos del medio físico y biótico, usados como factores o "covariables" para explorar asociaciones comunidad-hábitat, y son esenciales en la producción de nuevo conocimiento sobre patrones de distribución de especies y comunidades [@borcard2011; @maestre2008; @wiegand2013]. Cubren, por lo tanto, múltiples aspectos, entre los que destacan topografía, geomorfología, geología, climatología, población humana o densidad de carreteras, entre otros. Durante el siglo pasado, producir variables ambientales era costoso y lento, y su uso se limitaba a ámbitos geográficos muy concretos.
 
-El presente estudio tiene por objetivo producir información ambiental sobre República Dominicana, usando un índice espacial regular, a partir de datos abiertos y accesibles, y empleando *scripts* reproducibles. Concretamente, agrupé espacialmente (*spatial binning*) variables procedentes de superficies continúas, que representan atributos topográficos, geomorfológicos, de uso y cobertura del suelo, climátológicos, de hetereogeneidad de hábitat, de carreteras y de población. Para garantizar el reaprovechamiento de la información, calculé estadística zonal respecto de celdas hexagonales regulares que fungen como índice espacial. El conjunto de mapas generados constituye una fuente de información con gran potencial para su uso en distintos ámbitos de la ecología numérica y espacial. Asimismo, la metodología empleada tiene potencial de aplicación en estudios posteriores que requieran de datos sistemáticamente generados y accesibles.
+Actualmente, la información ambiental es global y diversa, y su uso en ecología por medio de herramientas de *big data* está en aumento de forma progresiva [@karger2017; @amatulli2020; @tuanmu2015; @zanagadaniele2022]. Buena parte de esta información es generada, originalmente, por sensores a bordo de satélites de observación de la Tierra (e.g. reflectancia de la superficie del planeta por sensores pasivos, o retrodispersión por sensores activos), pero su almacenamiento y posprocesamiento para generar productos derivados, requieren de plataformas con capacidades que superan a los recursos computacionales del PC común.
+
+Los catálogos de información global son producidos por grupos de investigación y académicos de diversos países [@zhao2021; @amani2020; @yang2017], alojados normalmente en repositorios gratuitos y puestos a disposición de la comunidad científica en diversas plataformas de computación en la nube (*cloud computing*) para su aprovechamiento. *Google Earth Engine* (GEE), la plataforma geoespacial de *cloud computing* más popular actualmente, ofrece planes gratuitos de acceso a los datos y a sus recursos de hardware. Aunque con restricciones de almacenamiento y de recursos, GEE permite procesar grandes volúmenes de datos de forma eficiente. También destacan *Microsoft Planetary Computer*, y los entornos de *cloud computing* de Maxar y Planet, que ofrecen imágenes de satélite crudas y colecciones de superficies continuas de variables derivadas (e.g., imágenes ráster, *stacks*), las cuales requieren potentes recursos para su procesamiento en una base de referencia común que permita extraer patrones espaciales [@microsoft2022; @google2022; @planetlabspbc2022; @maxartechnologies2022]. Esta revolución, por una parte, ha impulsado el acceso a un nutrido catálogo de datos ambientales, y por otra ha favorecido el desarrollo de nuevas líneas de estudio en ecología, y ha permitido resolver problemas de investigación que en el pasado jamás se habría pensado que podrían resolverse [@zhao2021].
+
+En República Dominicana (RD), buena parte de la información de ámbito nacional ha permanecido poco accesible al público, y su aprovechamiento en el ámbito de la investigación es limitado. Otras barreras también subyacen en el libre acceso a la información pública dominicana, como lo es el requisito de motivar las razones de petición de datos [@darbishire2006; @congreso2004]. A pesar de ello, a mediados de la década del 10 de este siglo, existía evidencia de que, gracias al mayor acceso a información pública, los reclamos de la población hacia sus autoridades se encontraban en aumento, una señal inequívoca de progreso [@skoufias2014].
+
+Aunque se requieren evaluaciones específicas, la producción de datos de escala nacional, parecía emplear metodologías no reproducibles y, en algunos casos, no declaradas. A esto se sumaba el hecho que, buena parte de la información que sí era accesible, había sido generada con referencia a unidades administrativas "al uso", las cuales abarcaban territorios heterogéneos. Otra dificultad asociada era el hecho de que diversos estudios produjeron mapas sin tener en cuenta potenciales usos posteriores, por lo que su reaprovechamiento requería de un esfuerzo previo de depuración y normalización. Todo ello repercutía sobre la producción de conocimiento científico de forma significativa, pues tanto personal investigador como estudiantes, veían limitadas sus capacidades de análisis por falta de fuentes de información sistemáticas.
+
+En el presente estudio, me propuse llenar el vacío de información sistemática y reaprovechable sobre RD, mediante la consolidación, con *scripts* reproducibles, de capas de datos ambientales abiertos, accesibles e indexados espacialmente. Específicamente, por medio estadística zonal indexando por celdas regulares, calculé promedios y otros estadísticos sobre variables que representan atributos topográficos, geomorfológicos, de uso y cobertura del suelo, climátológicos, de hetereogeneidad de hábitat, de carreteras y de población, entre otros. El conjunto de mapas generados es una fuente de información con gran potencial para su uso en distintos ámbitos de la ecología numérica, en biogeografía y en otras áreas de la biología y la geografía. Asimismo, la metodología empleada tiene potencial de aplicación en estudios posteriores que requieran de datos sistemáticamente generados y accesibles.
 
 # Metodología
 
-Produje información territorial usando estadística zonal (agrupamiento espacial o *spatial binning*) referido a celdas hexagonales de la biblioteca H3 (e.g. índice espacial) de República Dominicana, a [resoluciones](https://h3geo.org/docs/core-library/restable/) `r res`. Para esta labor, desarrollé *scripts* y funciones de Python y de R, que aprovecharon tanto el catálogo de información como los recursos de computación en la nube (*cloud computing*) del Google Earth Engine (GEE). Este tipo herramientas, basadas en computación en la nube (GEE), tiene como ventaja principal el mayor rendimiento y menor tiempo de ejecución requerido si se compara con recursos de hardware de escritorio. Su desventaja su principal desventaja es que, al tratarse de un recurso en línea, el usuario aumenta su dependencia de servicios externos, algo que para producir información de territorios pequeños, quizá no es lo más recomendable.
-
-Adicionalmente, además del flujo anterior, creé un conjunto de *scripts* y funciones de R para generar resultados similares a los obtenidos por medio de GEE, empleando recursos de hardware propios, software libre y paquetes de R para gestión de información geoespacial. Incluí algunas aplicaciones fácilmente realizables en una PC de escritorio de prestaciones moderadas. Incluí esta modalidad de procesamiento pensando en potenciales usuarios que no disponen de las habilidades de programación en el GEE, o que simplemente necesitan realizar sencillas operaciones de procesamiento geoespacial en PC local sin necesidad de depender de la nube.
+Produje información territorial usando estadística zonal (agrupamiento espacial o *spatial binning*) referido a celdas hexagonales de la biblioteca H3 (e.g. índice espacial) de República Dominicana, a [resoluciones](https://h3geo.org/docs/core-library/restable/) `r res` [@bivand2013; @handbook2010]. Para este cometido, desarrollé *scripts* y funciones de Python y de R, con las que aproveché tanto el catálogo de información como los recursos de computación en la nube (*cloud computing*) de Google Earth Engine (GEE). Adicionalmente, a título demostrativo, desarrollé un enfoque de procesamiento más modesto, usando igualmente código informático y fuentes de información alojadas en PC local. En las subsecciones a continuación, amplío los pormenores de ambos enfoques.
 
 ## Procesamiento usando GEE, Python y R
 
-Esta modalidad consistió en procesar grandes volumenes de datos espaciales en la nube, y procesarlos posteriormente en una PC de escritorio de prestaciones medias. En concreto, se realizaron múltiples procesamientos de *spatial binning* sobre celdas hexagonales H3, usando como capas de "valor" múltiples variables disponibles como *assets* en GEE. Estas capas de valores reunían variables tanto cualitativas como cuantitativas, alojadas previamente como *assets* del catálogo del GEE, o subidas exprofeso como *assets* de usuario a dicha plataforma. Las variables disponibles en GEE abarcan atributos muy diversos, tales como topográficos, morfológicos, de uso y cobertura del suelo, climáticos, de hetereogeneidad de hábitat, de carreteras y de población.
+Esta modalidad consistió en procesar grandes volúmenes de datos espaciales en Google Earth Engine (GEE), una plataforma de computación en la nube que se erige como un referente en materia de big data geoespacial, pues cuenta con un nutrido catálogo de fuentes del orden de petabytes de información, así como con múltiples algoritmos de análisis geoespacial [@zhao2021].
 
-Las instrucciones para el procesamiento en la nube fueron enviadas a la API del GEE por medio de un *script* de Python (especialmente de la librería `ee`), el cual se encuentra disponible en este [Jupyter Notebook](gee_python/zonal_statistics_using_ee.ipynb). Una vez descargados los resultados del *spatial binning* a la PC local, se aplicó posproceso con scripts y funciones de R para unir capas y desagrupar atributos anidados.
+En GEE realicé *spatial binning* sobre celdas hexagonales H3, usando como capas de "valor" múltiples variables disponibles como *assets* en GEE. Estas capas de valores reunían variables tanto cualitativas como cuantitativas, alojadas previamente como *assets* del catálogo del GEE, o subidas exprofeso como *assets* de usuario a dicha plataforma. Las variables disponibles en GEE abarcan atributos muy diversos, tales como topográficos, morfológicos, de uso y cobertura del suelo, climáticos, de hetereogeneidad de hábitat, de carreteras y de población. La ejecución de algoritmos de estadística zonal con GEE fue bastante eficiente, pues los tiempos de computación para generar estadísticos zonales fueron siempre inferiores a diez segundos.
 
-Para las variables cuantitativas se obtuvo la **media en su escala de medición original para cada celda H3**, y de las cualitativas se obtuvo **la frecuencia relativa de representación de cada clase respecto del total de píxeles con datos en cada celda H3** (más detalles, en la sección [The Python code](#the-python-code)). En este último caso, fue necesario realizar posproceso en R para "desagrupar" (*unnest*) los resultados anidados descargados desde GEE (e.g. diccionarios de Python). Finalmente, como parte del posproceso en R, se realizaron uniones de resultados y exportación
+> ToDo. Realizar estadística zonal por unidades administrativas del país para fines informativos. Ver ejemplo [aquí](#geomorpho90m-geomorphons-qualitative-variables-provinces-as-zones)
 
-Las fuentes empleadas fueron las siguientes:
+Las instrucciones para el procesamiento en la nube fueron enviadas a la API del GEE por medio de un *script* de Python (especialmente de la librería `ee`), el cual se encuentra disponible en este [Jupyter Notebook](gee_python/zonal_statistics_using_ee.ipynb). Una vez descargados los resultados del *spatial binning* a la PC local, se aplicó posproceso con scripts y funciones de R para unir capas y desagrupar atributos anidados de las variables cualitativas (e.g. cobertura del suelo).
 
--   CHELSA [@karger2017]
+Para las variables cuantitativas se obtuvo la **media en su escala de medición original para cada celda H3**, y de las cualitativas se obtuvo **la frecuencia relativa de representación de cada clase respecto del total de píxeles con datos en cada celda H3** (más detalles, en la sección [The Python code](#the-python-code)). En este último caso, fue necesario realizar posproceso en R para "desagrupar" (*unnest*) los resultados anidados descargados desde GEE (e.g. diccionarios de Python). Finalmente, como parte del posproceso en R, se realizaron uniones de resultados y exportación. La lista de fuentes empleadas se encuentra en la tabla \@ref(tab:fuentes).
 
-> Nota: el repo está "vivo", por lo que nuevas variables y métodos de agrupamiento se añadirán en el futuro.
+```{r fuentes, eval=T, results='asis', echo=F, message=F, warning=F}
+library(kableExtra)
+library(dplyr)
+tabla_fuentes <- readODS::read_ods('ref/tabla-de-fuentes.ods')
+tabla_fuentes %>% 
+  mutate(across(everything(), ~ ifelse(is.na(.x), '', .x))) %>%
+  mutate(across(everything(), ~ gsub('(\\*)(.*)(\\*)', '<i>\\2</i>', .x))) %>% 
+  # mutate(across(5:7, ~ ifelse(.x=='No disponible', 'No disponible', paste0("<a href=\"", .x,"\">", .x, "</a>")))) %>%
+  # mutate(across(everything(),
+  #               ~ ifelse(.x=='No disponible', 'No disponible',
+  #                        gsub('(http.*)(\\s|$|\\))',
+  #                             paste0("<a href=\"", "\\1","\">", "fuente", "</a>\\2"),
+  #                             .x)))) %>%
+  mutate(across(everything(),
+                ~ ifelse(.x=='No disponible', 'No disponible',
+                         gsubfn::gsubfn(
+                           '(http.*?)(\\s|$|\\))',
+                           ~ paste0("<a href=\"", x,"\">", substr(gsub('http.*?//', '', x), 1, 25), "... </a>", y), 
+                              .x)))) %>%
+  kable(format = 'html', escape = F, booktabs = T,
+        caption = 'Fuentes a las que se aplicaron los algoritmos de estadística zonal') %>%
+  kable_styling(bootstrap_options = c("hover", "condensed"), full_width = T) %>%
+  column_spec(column = c(2, 8), width_min = '4in') %>% 
+  column_spec(column = c(1,3:7), width_min ='2in', width_max = '4in')
+```
 
-## Procesamiento usando *scripts* y funciones de R, pensados para cómputos pequeños, y PC de prestaciones modestas
+> ToDo. Añadir fuentes: (1) distancia a cursos fluviales; (2) cuencas y red de drenaje
 
-La segunda modalidad consistió en realizar *spatial binning* en PC local usando *scripts* y funciones de R.
+> Nuevas variables y métodos de agrupamiento podrían añadirse progresivamente al repo.
 
+## Procesamiento demostrativo usando *scripts* y funciones de R
 
-Dado el alto volumen de datos procesados, esta alternativa se abandonó en beneficio de la primera (procesamiento en la nube). Aunque no produjo resultados específicos, el código empleado en las pruebas originales se incluye en esta sección.
+Aunque el uso de GEE contribuyó a alcanzar los objetivos de manera más ágil, esto no me impidió ver los potenciales riesgos de dependencia que entraña el servicio en la nube. Por esta razón, alternativamente, y en adición al procesamiento realizado en GEE, creé un conjunto de funciones y *scripts* de R para realizar cómputos de estadística zonal en PC local. Esta modalidad está dirigida a usuarios que prefieren usar recursos de hardware propios, y para quienes manejan volúmenes de datos relativamente pequeños (e.g., ráster de resolución espacial intermedia).
+
+Escribí funciones y *scripts* R para realizar cálculos de *spatial binning*, y pensados para el usuario de PC de escritorio, usando un conjunto de paquetes de información geoespacial eficientes y actuales para el entorno de programación estadística R [@pebesma2018; @hijmans2022; @pebesma2022; @rcoreteam2021]. Esta modalidad está dirigida a usuarios que no disponen de las habilidades de programación en el GEE, o que simplemente necesitan realizar sencillas operaciones de procesamiento geoespacial en PC local sin necesidad de depender de la nube de computación ni de licencias de software privativo.
+
+A modo de demostración, probé estos algoritmos con conjuntos de datos pequeños y obtuve resultados similares a los obtenidos por medio de GEE. No obstante, dado el alto volumen de datos procesados para toda República Dominicana, opté por usar las herramientas y recursos de GEE para generar los productos de este estudio.
 
 # Resultados
 
-![Vaiables disponibles / Available variables](img/all_vars_res_5.jpg)
+## Variables disponibles
+
+```{r cargar_nombres_vars, eval=T, include=F}
+# Number of variables by source
+suffixes <- c('ESA', 'CGL', 'GSL', 'GHH', 'WCL', 'CH-BIO', 'G90', 'G90-GEOM',
+              'CGIAR-ELE', 'GFC-PTC YEAR 2000', 'GFC-LOSS', 'OSM-DIST', 'GP-CONSUNadj YEAR 2020')
+merge_quant_qual_l <- readRDS('out/list_with_all_sources_all_resolution.RDS')
+uniq_names <- unique(unlist(sapply(merge_quant_qual_l, colnames, simplify = F)))
+uniq_names_thematic <- grep('hex_id| base$|^geometry$', uniq_names,
+                                 invert = T, value = T)
+uniq_names_t <- sapply(suffixes, function(x) length(grep(paste0('^', x, ' '), uniq_names_thematic)))
+# uniq_names_t[order(names(uniq_names_t))] #Properly sorted by name
+```
+
+Relaciono las variables disponibles en la tabla \@ref(tab:variables)
+
+```{r variables, eval=T, results='asis', echo=F, message=F, warning=F}
+library(kableExtra)
+library(dplyr)
+library(stringr)
+#Relación de variables en cada grupo
+relacion_vars_grupos <- sapply(suffixes, function(x) grep(paste0('^', x, ' '), uniq_names_thematic, value = T))
+# cat(gsub('G90 ', '', relacion_vars_grupos$G90), sep = '; ')
+tabla_vars <- readODS::read_ods('ref/tabla-variables.ods')
+tabla_vars %>%
+  mutate(across(everything(), ~ ifelse(is.na(.x), '', .x))) %>%
+  mutate(across(everything(), ~ gsub('(\\*)(.*)(\\*)', '<i>\\2</i>', .x))) %>%
+  mutate(across(everything(),
+                ~ ifelse(.x=='No disponible', 'No disponible',
+                         gsub('(http.*?)(\\s|$|\\))',
+                              paste0("<a href=\"", "\\1","\">", "esta fuente", "</a>\\2"),
+                              .x)))) %>%
+  kable(format = 'html', escape = F, booktabs = T,
+        caption = 'Relación de variables') %>%
+  kable_styling(bootstrap_options = c("hover", "condensed"), full_width = T) %>% 
+  column_spec(column = 6, width_min ='4in') %>% 
+  column_spec(column = 2, width_min ='3in') %>% 
+  column_spec(column = 4:5, width_min ='2in', width_max = '4in')
+```
+
+![Variables disponibles](img/all_vars_res_5.jpg)
+
+## Archivos resultantes de estadística zonal (*spatial binning*) según celdas
+
+Consulta los archivos resultantes por resolución de celdas H3, en [este directorio](out/). Los encontrarás en dos formatos:
+
+- R, archivo de extensión `RDS` (todas las resoluciones en objeto tipo lista).
+
+- GeoPackage, archivos de extensión `gpkg` (un archivo por cada resolución). Ideal abrirlo en QGIS.
+
+El numeral que sigue a la cadena `res_` se refiere a la resolución. Por ejemplo, el archivo de resolución 4, es `all_sources_all_variables_res_4.gpkg`.
+
+# Información suplementaria
 
 <!-- <ENG> -->
 
-This repo consolidates my (\@geofis) latest zonal statistics workflows using Google Earth Engine results, as well as my own R functions which generates zonal statistics from rasters and vectors.
-
-# Archivos resultantes de estadística zonal (*spatial binning*) según celdas
-
-Visitar este directorio
+<!-- This repo consolidates my (\@geofis) latest zonal statistics workflows using Google Earth Engine results, as well as my own R functions which generates zonal statistics from rasters and vectors. -->
 
 <!-- </ENG> -->
 
@@ -149,7 +230,7 @@ batch_unnest(
   eqv_tab_filename = 'global_SRTM_landforms_value_description_equivalencies.csv')
 ```
 
-### ESA WorldCover 10m v200
+### ESA WorldCover 2021, 10m v200
 
 ```{r}
 # Base name
@@ -212,7 +293,9 @@ wcv1bio_res7 <- merge_sf(
 # st_write(wcv1bio_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### Geomorpho90m (quantitative variables)
+### Geomorpho90m
+
+#### Geomorpho90m (quantitative variables)
 
 ```{r}
 # Base name
@@ -225,7 +308,7 @@ geom90m_res7 <- merge_sf(
 # st_write(geom90m_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### Geomorpho90m, geomorphons (qualitative variables)
+#### Geomorpho90m, geomorphons (qualitative variables)
 
 ```{r}
 # Base name
@@ -243,6 +326,81 @@ batch_unnest(
   results_path = results_path,
   eqv_tab_filename = 'geomorpho90m_geomorphons.csv')
 ```
+
+#### Geomorpho90m, geomorphons (qualitative variables) USING PROVINCES AS ZONES and cluster analysis {#geomorpho90m-geomorphons-qualitative-variables-provinces-as-zones}
+
+```{r}
+# Adapt to functions (ToDo: generalize functions)
+foo <- st_read('gee_python/out/result_layers/geomorpho90m_geomorphons_prov_res_1.gpkg')
+colnames(foo)[grep('TOPONIMIA', colnames(foo))] <- 'hex_id'
+st_write(foo %>% select(hex_id, geom, histogram), delete_dsn = T,
+         'gee_python/out/result_layers/geomorpho90m_geomorphons_prov2_res_1.gpkg')
+
+# Base name
+base_name <- 'geomorpho90m_geomorphons_prov2_res_'
+
+# Batch unnesting
+batch_unnest(
+  res_available = 1,
+  base_name = base_name,
+  results_path = results_path,
+  eqv_tab_filename = 'geomorpho90m_geomorphons.csv')
+
+# Clusters
+library(tidyverse)
+library(vegan)
+library(cluster)
+library(gclus)
+library(sf)
+devtools::source_url('https://raw.githubusercontent.com/biogeografia-master/scripts-de-analisis-BCI/master/biodata/funciones.R')
+prov_unnested <- st_read('gee_python/out/result_layers/geomorpho90m_geomorphons_prov2_res_1_unnested.gpkg')
+prov_unnested2 <- prov_unnested %>% st_drop_geometry() %>% column_to_rownames('hex_id') %>% select(-base)
+prov_unnested2_d <- vegdist(prov_unnested2, "euc")
+lista_cl <- list(
+        cl_single = hclust(prov_unnested2_d, method = 'single'),
+        cl_complete = hclust(prov_unnested2_d, method = 'complete'),
+        cl_upgma = hclust(prov_unnested2_d, method = 'average'),
+        cl_ward = hclust(prov_unnested2_d, method = 'ward.D2')
+)
+# dev.new()
+par(mfrow = c(2,2))
+invisible(map(names(lista_cl), function(x) plot(lista_cl[[x]], main = x, hang = -1)))
+par(mfrow = c(1,1))
+anch_sil <- calcular_anchuras_siluetas(
+        mc_orig = prov_unnested2, 
+        distancias = prov_unnested2_d, 
+        cluster = lista_cl$cl_complete
+        # cluster = lista_cl$cl_ward
+        # cluster = lista_cl$cl_upgma
+        )
+anch_sil
+u_dend_reord <- reorder.hclust(lista_cl$cl_complete, prov_unnested2_d)
+plot(u_dend_reord, hang = -1)
+rect.hclust(
+        tree = u_dend_reord,
+        k = 3)
+corte_k3 <- cutree(lista_cl$cl_complete, k = 3)
+prov_unnested$grp <- corte_k3
+# #st_write(prov_unnested, 'gee_python/out/result_layers/geomorpho90m_geomorphons_prov2_res_1_unnested_grp.gpkg')
+prov_unnested %>% st_drop_geometry() %>% select(-base) %>% pivot_longer(cols = flat:valley) %>%
+  mutate(hex_id = fct_reorder(hex_id, grp)) %>% 
+  mutate(grp = factor(grp, labels = c(
+    'Team llanura/piedemonte',
+    'Team vertiente/valle/interfluvio',
+    'Team vertiente/cima/depresión'))) %>% 
+  ggplot + aes(fill = name, y = value, x = hex_id) +
+  geom_bar(position="fill", stat="identity", ) +
+  scale_fill_brewer(palette = "Set3") +
+  # annotate(xmin = 'DISTRITO NACIONAL', xmax = 'SANTO DOMINGO', ymin = -Inf, ymax = Inf, geom = 'rect', alpha = 0.2) +
+  facet_grid(~ grp, scales = 'free_x', space = 'free') + theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), text = element_text(size=14))
+```
+
+-   Provincias agrupadas según su composición por "geomórfonos". Las provincias son unidades muy heterogéneas en cuanto a su composición fisiográfica. Este gráfico lo demuestra y, aun con toda su heterogeneidad, hay tres grupos de provincias diferenciados
+
+![](img/prov_cluster_geomorfonos_arbol.jpg)
+
+![](img/prov_cluster_geomorfonos_barras.jpg) ![](img/prov_cluster_geomorfonos_mapa.jpg)
 
 ### CGIAR Elevation SRTM90 V4
 
@@ -339,7 +497,7 @@ map(
 "{ 'INPUT' : 'gis_osm_roads_free_1.shp', 'OPERATION' : '+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=utm +zone=19 +ellps=WGS84', 'OUTPUT' : 'gis_osm_roads_free_1_utm.shp', 'TARGET_CRS' : QgsCoordinateReferenceSystem('EPSG:32619') }"
 ```
 
--   Generated a raster file of 1 arc-second from `gis_osm_roads_free_1_utm.shp`, with:
+-   Generated a raster file of ~ 1/3 arc-second (10 m) from `gis_osm_roads_free_1_utm.shp`, with:
 
 ```{bash, eval=F}
 
@@ -402,7 +560,7 @@ merge_quant_qual_l <- map(4:7, function(res) {
   first_sf <- list(
     st_read_rename(
       paste0(results_path, 'esa_worldcover_10m_v200_res_', res, '_unnested.gpkg'),
-      col_prefix = 'ESA'))
+      col_prefix = suffixes[1]))
   remainder_sf <- purrr::map2(
     paste0(
       results_path,
@@ -418,8 +576,7 @@ merge_quant_qual_l <- map(4:7, function(res) {
         paste0('hansen_gfc_v19_ly_res_', res, '_unnested.gpkg'),
         paste0('distance_to_osm_roads_res_', res, '.gpkg'),
         paste0('worldpop_gp_constrained_unadj_2020_res_', res, '.gpkg'))),
-    c('CGL', 'GSL', 'GHH', 'WCL', 'CH-BIO', 'G90', 'G90-GEOM',
-      'CGIAR-ELE', 'GFC-PTC YEAR 2000', 'GFC-LOSS', 'OSM-DIST', 'GP-CONSUNadj YEAR 2020'),
+    suffixes[2:length(suffixes)],
     st_read_rename, first = F)
   merge_quant_qual <- Reduce(
     function(...) merge(..., by='hex_id', all.x=TRUE),
@@ -604,9 +761,12 @@ chelsa_bio_file_paths <- list.files(
 chelsa_bio_cube <- read_stars(chelsa_bio_file_paths)
 ```
 
-
 ### Entrada Bibtex del repo
 
 ```
 
 ```
+
+
+
+# Referencias
