@@ -7,12 +7,12 @@ José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD)
 <br> Reportar errores a mi dirección de correo, o creando un *issue* en
 el repo.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7367180.svg)](https://doi.org/10.5281/zenodo.7367180)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7367256.svg)](https://doi.org/10.5281/zenodo.7367256)
 
 Citar este repo usando el siguiente formato (entrada BibTeX
 [aquí](#entrada-bibtex)): “José Ramón Martínez-Batlle. (2022).
 geofis/zonal-statistics: Let there be environmental variables
-(v0.0.0.9000). Zenodo. <https://doi.org/10.5281/zenodo.7367180>”
+(v0.0.0.9000). Zenodo. <https://doi.org/10.5281/zenodo.7367256>”
 
 # Introducción
 
@@ -1666,8 +1666,8 @@ chelsa_bio_cube <- read_stars(chelsa_bio_file_paths)
       year         = 2022,
       publisher    = {Zenodo},
       version      = {v0.0.0.9000},
-      doi          = {10.5281/zenodo.7367180},
-      url          = {https://doi.org/10.5281/zenodo.7367180}
+      doi          = {10.5281/zenodo.7367256},
+      url          = {https://doi.org/10.5281/zenodo.7367256}
     }
 
 # Referencias
