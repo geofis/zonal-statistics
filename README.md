@@ -16,7 +16,7 @@ el repo.
 
 > Si quieres consultar el código con el que generé los archivos
 > resultantes del *spatial binning*, visita
-> [esta](#cloud-processing-gee-and-post-processing-in-r) sección.
+> [esta](#cloud-processing-and-r) sección.
 
 Versión HTML (quizá más legible),
 [aquí](https://geofis.github.io/zonal-statistics/README.html)

@@ -28,7 +28,7 @@ José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD) <br
 
 <!-- > Si necesitas descargar los archivos reusltantes, visita [esta ruta](out/) o descarga el comprimido del repo [aquí]() -->
 
-> Si quieres consultar el código con el que generé los archivos resultantes del *spatial binning*, visita [esta](#cloud-processing-gee-and-post-processing-in-r) sección.
+> Si quieres consultar el código con el que generé los archivos resultantes del *spatial binning*, visita [esta](#cloud-processing-and-r) sección.
 
 `r if(knitr::opts_knit$get("rmarkdown.pandoc.to") == 'gfm-yaml_metadata_block') 'Versión HTML (quizá más legible), [aquí](https://geofis.github.io/zonal-statistics/README.html)'`
 
@@ -163,7 +163,7 @@ El numeral que sigue a la cadena `res_` se refiere a la resolución. Por ejemplo
 
 <!-- </ENG> -->
 
-# Cloud processing (GEE) and post-processing in R
+# Cloud processing (GEE) and post-processing in R{#cloud-processing-and-r}
 
 ## The Python code {#the-python-code}
 
