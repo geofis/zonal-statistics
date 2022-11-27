@@ -7,8 +7,12 @@ José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD)
 <br> Reportar errores a mi dirección de correo, o creando un *issue* en
 el repo.
 
-<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6991441.svg)](https://doi.org/10.5281/zenodo.6991441) -->
-<!-- Citar este repo usando el siguiente formato (entrada BibTeX [aquí](#entrada-bibtex)): "José Ramón Martínez Batlle. (2022). geofis/forest-loss-fire-reproducible: Preparing for publication (v0.0.2). Zenodo. https://doi.org/10.5281/zenodo.6991441" -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7367180.svg)](https://doi.org/10.5281/zenodo.7367180)
+
+Citar este repo usando el siguiente formato (entrada BibTeX
+[aquí](#entrada-bibtex)): “José Ramón Martínez-Batlle. (2022).
+geofis/zonal-statistics: Let there be environmental variables
+(v0.0.0.9000). Zenodo. <https://doi.org/10.5281/zenodo.7367180>”
 
 # Introducción
 
@@ -145,7 +149,7 @@ siempre inferiores a diez segundos.
 
 > ToDo. Realizar estadística zonal por unidades administrativas del país
 > para fines informativos. Ver ejemplo
-> [aquí](#geomorpho90m-geomorphons-qualitative-variables-provinces-as-zones)
+> [aquí](#geomorpho90m-geomorphons-qualitative-variables-using-provinces-as-zones-and-cluster-analysis)
 
 Las instrucciones para el procesamiento en la nube fueron enviadas a la
 API del GEE por medio de un *script* de Python (especialmente de la
@@ -1652,7 +1656,19 @@ chelsa_bio_file_paths <- list.files(
 chelsa_bio_cube <- read_stars(chelsa_bio_file_paths)
 ```
 
-### Entrada Bibtex del repo
+### Entrada Bibtex
+
+    @software{jose_ramon_martinez_batlle_2022_7367180,
+      author       = {José Ramón Martínez-Batlle},
+      title        = {{geofis/zonal-statistics: Let there be 
+                       environmental variables}},
+      month        = nov,
+      year         = 2022,
+      publisher    = {Zenodo},
+      version      = {v0.0.0.9000},
+      doi          = {10.5281/zenodo.7367180},
+      url          = {https://doi.org/10.5281/zenodo.7367180}
+    }
 
 # Referencias
 
