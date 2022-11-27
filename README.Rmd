@@ -1,8 +1,10 @@
 ---
 title: "Estadística zonal multipropósito sobre información geoespacial de República Dominicana, usando Google Earth Engine, Python y R"
 output:
-  # bookdown::github_document2
-  bookdown::html_document2
+  bookdown::github_document2:
+    keep_html: true
+    number_sections: false
+  # bookdown::html_document2
 editor_options: 
   chunk_output_type: console
 bibliography: ref/biblio.bib
@@ -28,7 +30,7 @@ José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD) <br
 
 <!-- > Si necesitas descargar los archivos reusltantes, visita [esta ruta](out/) o descarga el comprimido del repo [aquí]() -->
 
-> Si quieres consultar el código con el que generé los archivos resultantes del *spatial binning*, visita [esta](#cloud-processing-and-r) sección.
+> Si quieres consultar el código con el que generé los archivos resultantes del *spatial binning*, visita [esta](#cloud-processing-gee-and-post-processing-in-r) sección.
 
 `r if(knitr::opts_knit$get("rmarkdown.pandoc.to") == 'gfm-yaml_metadata_block') 'Versión HTML (quizá más legible), [aquí](https://geofis.github.io/zonal-statistics/README.html)'`
 
@@ -163,7 +165,8 @@ El numeral que sigue a la cadena `res_` se refiere a la resolución. Por ejemplo
 
 <!-- </ENG> -->
 
-# Cloud processing (GEE) and post-processing in R{#cloud-processing-and-r}
+
+# Cloud processing (GEE) and post-processing in R
 
 ## The Python code {#the-python-code}
 

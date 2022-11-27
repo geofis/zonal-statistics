@@ -10,13 +10,13 @@ el repo.
 <!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6991441.svg)](https://doi.org/10.5281/zenodo.6991441) -->
 <!-- Citar este repo usando el siguiente formato (entrada BibTeX [aquí](#entrada-bibtex)): "José Ramón Martínez Batlle. (2022). geofis/forest-loss-fire-reproducible: Preparing for publication (v0.0.2). Zenodo. https://doi.org/10.5281/zenodo.6991441" -->
 
-# 1 Introducción
+# Introducción
 
 <!-- > Si necesitas descargar los archivos reusltantes, visita [esta ruta](out/) o descarga el comprimido del repo [aquí]() -->
 
 > Si quieres consultar el código con el que generé los archivos
 > resultantes del *spatial binning*, visita
-> [esta](#cloud-processing-and-r) sección.
+> [esta](#cloud-processing-gee-and-post-processing-in-r) sección.
 
 Versión HTML (quizá más legible),
 [aquí](https://geofis.github.io/zonal-statistics/README.html)
@@ -107,7 +107,7 @@ geografía. Asimismo, la metodología empleada tiene potencial de
 aplicación en estudios posteriores que requieran de datos
 sistemáticamente generados y accesibles.
 
-# 2 Metodología
+# Metodología
 
 Produje información territorial usando estadística zonal (agrupamiento
 espacial o *spatial binning*) referido a celdas hexagonales de la
@@ -122,7 +122,7 @@ procesamiento más modesto, usando igualmente código informático y
 fuentes de información alojadas en PC local. En las subsecciones a
 continuación, amplío los pormenores de ambos enfoques.
 
-## 2.1 Procesamiento usando GEE, Python y R
+## Procesamiento usando GEE, Python y R
 
 Esta modalidad consistió en procesar grandes volúmenes de datos
 espaciales en Google Earth Engine (GEE), una plataforma de computación
@@ -165,11 +165,11 @@ necesario realizar posproceso en R para “desagrupar” (*unnest*) los
 resultados anidados descargados desde GEE (e.g. diccionarios de Python).
 Finalmente, como parte del posproceso en R, se realizaron uniones de
 resultados y exportación. La lista de fuentes empleadas se encuentra en
-la tabla <a href="#tab:fuentes">2.1</a>.
+la tabla <a href="#tab:fuentes">1</a>.
 
 <table class="table table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <caption>
-Table 2.1: Fuentes a las que se aplicaron los algoritmos de estadística
+Table 1: Fuentes a las que se aplicaron los algoritmos de estadística
 zonal
 </caption>
 <thead>
@@ -586,7 +586,7 @@ disponible directamente en el catálogo del GEE
 > Nuevas variables y métodos de agrupamiento podrían añadirse
 > progresivamente al repo.
 
-## 2.2 Procesamiento demostrativo usando *scripts* y funciones de R
+## Procesamiento demostrativo usando *scripts* y funciones de R
 
 Aunque el uso de GEE contribuyó a alcanzar los objetivos de manera más
 ágil, esto no me impidió ver los potenciales riesgos de dependencia que
@@ -613,16 +613,16 @@ No obstante, dado el alto volumen de datos procesados para toda
 República Dominicana, opté por usar las herramientas y recursos de GEE
 para generar los productos de este estudio.
 
-# 3 Resultados
+# Resultados
 
-## 3.1 Variables disponibles
+## Variables disponibles
 
 Relaciono las variables disponibles en la tabla
-<a href="#tab:variables">3.1</a>
+<a href="#tab:variables">2</a>
 
 <table class="table table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
 <caption>
-Table 3.1: Relación de variables
+Table 2: Relación de variables
 </caption>
 <thead>
 <tr>
@@ -1013,7 +1013,7 @@ mean
 
 ![Variables disponibles](img/all_vars_res_5.jpg)
 
-## 3.2 Archivos resultantes de estadística zonal (*spatial binning*) según celdas
+## Archivos resultantes de estadística zonal (*spatial binning*) según celdas
 
 Consulta los archivos resultantes por resolución de celdas H3, en [este
 directorio](out/). Los encontrarás en dos formatos:
@@ -1028,15 +1028,15 @@ El numeral que sigue a la cadena `res_` se refiere a la resolución. Por
 ejemplo, el archivo de resolución 4, es
 `all_sources_all_variables_res_4.gpkg`.
 
-# 4 Información suplementaria
+# Información suplementaria
 
 <!-- <ENG> -->
 <!-- This repo consolidates my (\@geofis) latest zonal statistics workflows using Google Earth Engine results, as well as my own R functions which generates zonal statistics from rasters and vectors. -->
 <!-- </ENG> -->
 
-# 5 Cloud processing (GEE) and post-processing in R
+# Cloud processing (GEE) and post-processing in R
 
-## 5.1 The Python code
+## The Python code
 
 See Jupyter Notebook [here](gee_python/zonal_statistics_using_ee.ipynb).
 
@@ -1073,14 +1073,14 @@ Then, I exported every zonal stats generated with this sample code:
 zone_stats.to_file(filename='output_geopackage.gpkg', driver='GPKG', layer='layer name')
 ```
 
-## 5.2 Unnesting dictionary columns from qualitative source
+## Unnesting dictionary columns from qualitative source
 
 In this section, I include the code used to convert the key +
 frequencies dictionary column generated in EE, to named unnested
 columns. I also merge, at the end of this section, all the variables
 obtained for each resolution level, including the quantitative ones.
 
-### 5.2.1 Load tools and define paths
+### Load tools and define paths
 
 ``` r
 library(tmap)
@@ -1092,7 +1092,7 @@ results_path <- 'gee_python/out/result_layers/'
 final_results <- 'out/'
 ```
 
-### 5.2.2 Global SRTM Landforms
+### Global SRTM Landforms
 
 ``` r
 # Base name
@@ -1111,7 +1111,7 @@ batch_unnest(
   eqv_tab_filename = 'global_SRTM_landforms_value_description_equivalencies.csv')
 ```
 
-### 5.2.3 ESA WorldCover 2021, 10m v200
+### ESA WorldCover 2021, 10m v200
 
 ``` r
 # Base name
@@ -1130,7 +1130,7 @@ batch_unnest(
   eqv_tab_filename = 'esa_worldcover_10m_v200_res_4_value_description_equivalencies.csv')
 ```
 
-### 5.2.4 Copernicus Global Land Cover Layers: CGLS-LC100 Collection 3
+### Copernicus Global Land Cover Layers: CGLS-LC100 Collection 3
 
 ``` r
 # Base name
@@ -1149,7 +1149,7 @@ batch_unnest(
   eqv_tab_filename = 'copernicus_global_landcover_value_description_equivalencies.csv')
 ```
 
-### 5.2.5 Global Habitat Heterogeneity
+### Global Habitat Heterogeneity
 
 ``` r
 # Base name
@@ -1161,7 +1161,7 @@ ghh_res7 <- merge_sf(paste0(results_path, c(build_name('1'), build_name('2'), bu
 # st_write(ghh_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### 5.2.6 WorldClim V1 BIO variables
+### WorldClim V1 BIO variables
 
 ``` r
 # Base name
@@ -1174,9 +1174,9 @@ wcv1bio_res7 <- merge_sf(
 # st_write(wcv1bio_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### 5.2.7 Geomorpho90m
+### Geomorpho90m
 
-#### 5.2.7.1 Geomorpho90m (quantitative variables)
+#### Geomorpho90m (quantitative variables)
 
 ``` r
 # Base name
@@ -1189,7 +1189,7 @@ geom90m_res7 <- merge_sf(
 # st_write(geom90m_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-#### 5.2.7.2 Geomorpho90m, geomorphons (qualitative variables)
+#### Geomorpho90m, geomorphons (qualitative variables)
 
 ``` r
 # Base name
@@ -1208,7 +1208,7 @@ batch_unnest(
   eqv_tab_filename = 'geomorpho90m_geomorphons.csv')
 ```
 
-#### 5.2.7.3 Geomorpho90m, geomorphons (qualitative variables) USING PROVINCES AS ZONES and cluster analysis
+#### Geomorpho90m, geomorphons (qualitative variables) USING PROVINCES AS ZONES and cluster analysis
 
 ``` r
 # Adapt to functions (ToDo: generalize functions)
@@ -1287,7 +1287,7 @@ prov_unnested %>% st_drop_geometry() %>% select(-base) %>% pivot_longer(cols = f
 ![](img/prov_cluster_geomorfonos_barras.jpg)
 ![](img/prov_cluster_geomorfonos_mapa.jpg)
 
-### 5.2.8 CGIAR Elevation SRTM90 V4
+### CGIAR Elevation SRTM90 V4
 
 ``` r
 # Base name
@@ -1300,7 +1300,7 @@ srtm90v4_res7 <- merge_sf(
 # st_write(srtm90v4_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### 5.2.9 CHELSA v21 BIO variables
+### CHELSA v21 BIO variables
 
 - Prepare layers for uploading. Export TIF files to reduce their size
   and to conform EE standard.
@@ -1327,9 +1327,9 @@ chelsav21bio_res7 <- merge_sf(
 # st_write(chelsav21bio_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### 5.2.10 Hansen et al. (2013)
+### Hansen et al. (2013)
 
-#### 5.2.10.1 Year-2000 percent tree cover (quantitative)
+#### Year-2000 percent tree cover (quantitative)
 
 ``` r
 # Base name
@@ -1342,7 +1342,7 @@ hansengfcv19ptc_res7 <- merge_sf(
 # st_write(hansengfcv19ptc_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-#### 5.2.10.2 Year of forest loss (qualitative)
+#### Year of forest loss (qualitative)
 
 ``` r
 # Base name
@@ -1368,7 +1368,7 @@ map(
 )
 ```
 
-### 5.2.11 Distance to OSM roads and trails
+### Distance to OSM roads and trails
 
 - Downloaded OSM database of DR and Haiti. For this, pressed the Export
   button from OSM web GUI while logged in.
@@ -1430,7 +1430,7 @@ distosmroads_res7 <- merge_sf(
 # st_write(distosmroads_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-### 5.2.12 WorldPop Global Project Population Data: Constrained Estimated Age and Sex Structures of Residential Population per 100x100m Grid Square (UN adjusted)
+### WorldPop Global Project Population Data: Constrained Estimated Age and Sex Structures of Residential Population per 100x100m Grid Square (UN adjusted)
 
 ``` r
 # Base name
@@ -1443,7 +1443,7 @@ worldpopconsunadj2020_res7 <- merge_sf(
 # st_write(worldpopconsunadj2020_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
-## 5.3 Merge all the GeoPackages in one
+## Merge all the GeoPackages in one
 
 ``` r
 res <- 4:7
@@ -1542,11 +1542,11 @@ merge_quant_qual_l$`H3 resolution: 6` %>% select(matches('^GSL'), -matches('base
   tm_borders(col = 'grey15', lwd = 1)
 ```
 
-# 6 WITHOUT GOOGLE EARTH ENGINE (value layers dowloaded from original sources)
+# WITHOUT GOOGLE EARTH ENGINE (value layers dowloaded from original sources)
 
-## 6.1 Use cases of mean zonal statistics (only for quantitative value layers)
+## Use cases of mean zonal statistics (only for quantitative value layers)
 
-### 6.1.1 Load packages and functions
+### Load packages and functions
 
 ``` r
 library(sf)
@@ -1555,9 +1555,9 @@ library(ggplot2)
 source('R/zonal-stats.R')
 ```
 
-### 6.1.2 Using only one single value source
+### Using only one single value source
 
-#### 6.1.2.1 Hex grid already available (from file)
+#### Hex grid already available (from file)
 
 ``` r
 data_path <- 'inst/extdata/'
@@ -1577,7 +1577,7 @@ zs_sp_index_from_file %>%
   ggplot_template
 ```
 
-#### 6.1.2.2 Hex grid purpose-built from `zonal_stats` function using a extent polygon from file, WITHOUT buffer zone around the extent polygon
+#### Hex grid purpose-built from `zonal_stats` function using a extent polygon from file, WITHOUT buffer zone around the extent polygon
 
 ``` r
 dr_extra <- st_read(paste0(data_path, 'dr_extra.gpkg')) # From DR (ONE) GeoPackage > st_buffer, 2km
@@ -1590,7 +1590,7 @@ zs_sp_index_created_no_buf %>%
   ggplot_template
 ```
 
-#### 6.1.2.3 Hex grid purpose-built from `zonal_stats` function using a extent polygon from file, WITH buffer zone (2 km) around the extent polygon
+#### Hex grid purpose-built from `zonal_stats` function using a extent polygon from file, WITH buffer zone (2 km) around the extent polygon
 
 ``` r
 zs_sp_index_created_buf <- zonal_stats(value = shannon, fun = mean, na.rm=T,
@@ -1602,9 +1602,9 @@ zs_sp_index_created_buf %>%
   ggplot_template
 ```
 
-### 6.1.3 Using multiple value sources
+### Using multiple value sources
 
-#### 6.1.3.1 Same dimensions
+#### Same dimensions
 
 ``` r
 simpson <- read_stars(paste0(data_path, 'simpson_01_05_1km_uint16.tif'))
@@ -1618,7 +1618,7 @@ zs_sp_mult_values_same_dim <- zs_sp_mult_values_same_dim %>%
 plot(zs_sp_mult_values_same_dim[c('Shannon diversity (MODIS-EVI)', 'Simpson (MODIS-EVI)')])
 ```
 
-#### 6.1.3.2 Different dimensions
+#### Different dimensions
 
 ``` r
 gtopo <- read_stars(paste0(data_path, 'gt30w100n40.tif')) # + GTOPO 30
@@ -1632,9 +1632,9 @@ zs_sp_mult_values_dif_dim <- zs_sp_mult_values_dif_dim %>%
 plot(zs_sp_mult_values_dif_dim[c('Shannon diversity (MODIS-EVI)', 'GTOPO30')])
 ```
 
-## 6.2 More use cases of loading multiple star sources (not actually for computing zonal stats, only to show ways of building image stacks with `stars`)
+## More use cases of loading multiple star sources (not actually for computing zonal stats, only to show ways of building image stacks with `stars`)
 
-### 6.2.1 Geomorpho90m
+### Geomorpho90m
 
 ``` r
 geomorpho_file_paths <- list.files(
@@ -1643,7 +1643,7 @@ geomorpho_file_paths <- list.files(
 geomorpho_cube <- read_stars(geomorpho_file_paths)
 ```
 
-### 6.2.2 CHELSA, bio variables (gets locked, even with resolution 4 hexagons). The alternative was GEE.
+### CHELSA, bio variables (gets locked, even with resolution 4 hexagons). The alternative was GEE.
 
 ``` r
 chelsa_bio_file_paths <- list.files(
@@ -1652,9 +1652,9 @@ chelsa_bio_file_paths <- list.files(
 chelsa_bio_cube <- read_stars(chelsa_bio_file_paths)
 ```
 
-### 6.2.3 Entrada Bibtex del repo
+### Entrada Bibtex del repo
 
-# 7 Referencias
+# Referencias
 
 <div id="refs" class="references csl-bib-body hanging-indent"
 line-spacing="2">
