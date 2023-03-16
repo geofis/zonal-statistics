@@ -110,7 +110,8 @@ A modo de demostración, probé estos algoritmos con conjuntos de datos pequeño
 ```{r cargar_nombres_vars, eval=T, include=F}
 # Number of variables by source
 suffixes <- c('ESA', 'CGL', 'GSL', 'GHH', 'WCL', 'CH-BIO', 'G90', 'G90-GEOM',
-              'CGIAR-ELE', 'GFC-PTC YEAR 2000', 'GFC-LOSS', 'OSM-DIST', 'GP-CONSUNadj YEAR 2020')
+              'CGIAR-ELE', 'GFC-PTC YEAR 2000', 'GFC-LOSS', 'OSM-DIST',
+              'GP-CONSUNadj YEAR 2020', 'YINSOLTIME')
 merge_quant_qual_l <- readRDS('out/list_with_all_sources_all_resolution.RDS')
 uniq_names <- unique(unlist(sapply(merge_quant_qual_l, colnames, simplify = F)))
 uniq_names_thematic <- grep('hex_id| base$|^geometry$', uniq_names,
@@ -556,6 +557,21 @@ worldpopconsunadj2020_res7 <- merge_sf(
 # st_write(worldpopconsunadj2020_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
+### Yearly insolation time
+
+> See [this file](aux/insolation-time-GRASS-GIS.Rmd) for methodology used to create the value layer.
+
+```{r}
+# Base name
+base_name <- 'yearly_insolation_time_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'yearly_insolation_time_#_res_7.gpkg')
+yearlyinstime_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(yearlyinstime_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
 ## Merge all the GeoPackages in one
 
 ```{r}
@@ -579,7 +595,8 @@ merge_quant_qual_l <- map(4:7, function(res) {
         paste0('hansen_gfc_v19_ptc_y2000_res_', res, '.gpkg'),
         paste0('hansen_gfc_v19_ly_res_', res, '_unnested.gpkg'),
         paste0('distance_to_osm_roads_res_', res, '.gpkg'),
-        paste0('worldpop_gp_constrained_unadj_2020_res_', res, '.gpkg'))),
+        paste0('worldpop_gp_constrained_unadj_2020_res_', res, '.gpkg'),
+        paste0('yearly_insolation_time_res_', res, '.gpkg'))),
     suffixes[2:length(suffixes)],
     st_read_rename, first = F)
   merge_quant_qual <- Reduce(
@@ -599,7 +616,7 @@ map(1:4, function(x)
 # All variables!!
 # jpeg('img/all_vars_res_5.jpg', width = 3840, height = 2032, res = 250)
 all_vars_res_5 <- merge_quant_qual_l$`H3 resolution: 5` %>%
-  select(-matches(c('hex_id| base|^WCL bio19'))) %>%
+  select(-matches(c('hex_id| base|^WCL bio1[8,9]'))) %>%
   pivot_longer(names_to = 'variable', values_to = 'value', -geometry) %>%
   tm_shape() +
   tm_fill(col='value', palette = "BrBG", size = 0.1, style = 'fisher', legend.is.portrait = T) +

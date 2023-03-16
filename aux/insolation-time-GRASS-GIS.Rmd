@@ -1,0 +1,96 @@
+---
+title: "Horas de insolación de terreno"
+author: "José Martínez<br>Michela Izzo"
+output:
+  # bookdown::github_document2:
+  #   number_sections: false
+  #   fig_caption: yes
+  bookdown::html_document2:
+    number_sections: false
+    code_folding: hide
+    fig_caption: yes
+editor_options: 
+  chunk_output_type: console
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  cache = F, 
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE)
+```
+
+`r if(knitr::opts_knit$get("rmarkdown.pandoc.to") == 'gfm-yaml_metadata_block') 'Versión HTML (más legible e interactiva), [aquí](https://geofis.github.io/datos-meteoclimaticos-escenarios-cc/seleccion-variables.html)'`
+
+`r if(knitr::opts_knit$get("rmarkdown.pandoc.to") == 'latex') 'Versión HTML (quizá más legible), [aquí](https://geofis.github.io/datos-meteoclimaticos-escenarios-cc/seleccion-variables.html)'`
+
+
+## PRUEBAS
+
+```{r, eval=F}
+# grass --text -c merit-dem-mosaic.tif ./grass
+# g.gisenv 
+# # LOCATION_NAME=grass
+# # MAPSET=PERMANENT
+# # GUI=text
+# # PID=87742
+# r.import input=merit-dem-mosaic.tif output=dem
+# v.in.ogr input=gadm36_DOM_0.gpkg output=pais
+# # r.sunmask elevation=dem year=2023 month=1 day=4 hour=15 minute=39 timezone=-4 output=testing #Extremadamente lento
+# # Cambiando enfoque, usar r.sun, requiere calcular el horizon y el aspect
+# r.horizon elevation=dem step=30 bufferzone=0.0019 output=horangle maxdistance=0.046
+# r.slope.aspect --overwrite zscale=0.000010288 elevation=dem aspect=aspect slope=slope
+# for i in `seq 7 1 19`; do r.sun --overwrite elevation=dem horizon_basename=horangle horizon_step=30 aspect=aspect slope=slope incidout=incidout_t$i day=4 time=$i nprocs=7; done
+```
+
+## DEFINITIVO
+
+```{r, eval=F}
+# Usando UTM
+
+# Preparando el DEM con GDAL
+gdalwarp -overwrite -of GTiff -ot Float32 -cutline \
+/media/jose/datos/zonal_statistics_for_DR_sources_used/terrain-shadow-sombra-terreno/gadm36_DOM_0_utm.gpkg -cl \
+gadm36_DOM_0_utm -crop_to_cutline -dstnodata -9999 \
+/home/jose/Documentos/grass/hidrografiapais/mosaico_32619.tif \
+/media/jose/datos/zonal_statistics_for_DR_sources_used/terrain-shadow-sombra-terreno/mosaico_32619.tif
+
+# GRASS
+grass --text -c mosaico_32619.tif ./grass_utm
+g.gisenv
+# GISDBASE=/media/jose/datos/zonal_statistics_for_DR_sources_used/terrain-shadow-sombra-terreno
+# LOCATION_NAME=grass_utm
+# MAPSET=PERMANENT
+# GUI=text
+# PID=212541
+
+# Importar DEM a región de GRASS
+r.import --overwrite input=mosaico_32619.tif output=dem
+
+# Importar territorio dominicano
+v.in.ogr input=gadm36_DOM_0_utm.gpkg output=pais
+
+# Calcular horizonte. No fue necesario
+#r.horizon elevation=dem step=30 bufferzone=200 output=horangle maxdistance=5000
+
+# Calcular pendiente y orientación (se necesita para el addon r.sun)
+r.slope.aspect --overwrite elevation=dem aspect=aspect slope=slope
+
+# Calcular las horas de insolación de terreno diarias
+for i in `echo {001..365}`; do echo -e "\nTRABAJANDO EN EL DIA $i ...\n"; r.sun --overwrite \
+elevation=dem aspect=aspect slope=slope day=$i nprocs=7 \
+insol_time=insol_time_ordinal_day_$i step=0.25; done
+
+# Exportar (opcionalmente, de ahí que esté comentado) los archivos diarios (subir a EE opcionalmente; no se subieron)
+# for i in `echo {001..365}`; do echo -e "\nTRABAJANDO EN EL DIA $i ...\n"; r.out.gdal --overwrite \
+# input=insol_time_ordinal_day_$i output=para_ee/utm/insol_time_ordinal_day_$i.tif createopt="COMPRESS=LZW"; \
+# gdalwarp -t_srs EPSG:4326 -r near -of GTiff -co COMPRESS=LZW \
+# para_ee/utm/insol_time_ordinal_day_$i.tif \
+# para_ee/ll/insol_time_ordinal_day_$i.tif; done
+
+# Generar una imagen de horas de insolación de terreno anual, sumando las diarias
+r.series --overwrite input="`g.list type=raster pattern=insol_time_ordinal_day* sep=,`" \
+output=insol_time_ordinal_day_sum method=sum
+```
