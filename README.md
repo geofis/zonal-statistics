@@ -3,7 +3,7 @@ República Dominicana, usando Google Earth Engine, Python y R
 ================
 
 José Ramón Martínez Batlle, Universidad Autónoma de Santo Domingo (UASD)
-<br> Email: jmartinez19@uasd.edu.do <br> GitHub: @geofis <br> 2022-11-26
+<br> Email: jmartinez19@uasd.edu.do <br> GitHub: @geofis <br> 2023-03-20
 <br> Reportar errores a mi dirección de correo, o creando un *issue* en
 el repo.
 
@@ -581,6 +581,93 @@ Es un conjunto de datos antiguo, pero tiene como ventaja que está
 disponible directamente en el catálogo del GEE
 </td>
 </tr>
+<tr>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+YINSOLTIME
+</td>
+<td style="text-align:left;min-width: 4in; ">
+Horas de insolación anuales
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+89.25
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 4in; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+WBW-DIST
+</td>
+<td style="text-align:left;min-width: 4in; ">
+Distancia a cuerpos de aguas interiores, mar y humedales
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+100
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 4in; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+TSEASON-IZZO
+</td>
+<td style="text-align:left;min-width: 4in; ">
+Estacionalidad térmica (desviación estándar de la temperatura media
+mensual para un periodo de referencia)
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+1000
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 4in; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+PSEASON-IZZO
+</td>
+<td style="text-align:left;min-width: 4in; ">
+Estacionalidad térmica (coeficiente de variación porcentual
+(stdev/media\*100) de la temperatura media mensual para un periodo de
+referencia)
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+1000
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+</td>
+<td style="text-align:left;min-width: 4in; ">
+</td>
+</tr>
 </tbody>
 </table>
 
@@ -1012,6 +1099,101 @@ mean
 19
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+YINSOLTIME
+</td>
+<td style="text-align:left;min-width: 3in; ">
+Horas de insolación anuales
+</td>
+<td style="text-align:left;">
+numérica
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+media
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+horas de insolación
+</td>
+<td style="text-align:left;min-width: 4in; ">
+mean
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WBW-DIST
+</td>
+<td style="text-align:left;min-width: 3in; ">
+Distancia a cuerpos de aguas interiores, mar y humedales
+</td>
+<td style="text-align:left;">
+numérica
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+media
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+metros
+</td>
+<td style="text-align:left;min-width: 4in; ">
+mean
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TSEASON-IZZO
+</td>
+<td style="text-align:left;min-width: 3in; ">
+Estacionalidad térmica (desviación estándar de la temperatura media
+mensual para un periodo de referencia)
+</td>
+<td style="text-align:left;">
+numérica
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+media
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+grados Celsius
+</td>
+<td style="text-align:left;min-width: 4in; ">
+mean
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PSEASON-IZZO
+</td>
+<td style="text-align:left;min-width: 3in; ">
+Estacionalidad térmica (coeficiente de variación porcentual
+(stdev/media\*100) de la temperatura media mensual para un periodo de
+referencia)
+</td>
+<td style="text-align:left;">
+numérica
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+media
+</td>
+<td style="text-align:left;min-width: 2in; max-width: 4in; ">
+porcentaje
+</td>
+<td style="text-align:left;min-width: 4in; ">
+mean
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
 </tbody>
 </table>
 
@@ -1089,6 +1271,7 @@ obtained for each resolution level, including the quantitative ones.
 ``` r
 library(tmap)
 library(tidyverse)
+library(sf)
 source('R/unnest-qual-zonal-stats.R')
 source('R/merge-sf.R')
 source('R/st-read-rename-cols-based-on-prefix.R')
@@ -1447,6 +1630,85 @@ worldpopconsunadj2020_res7 <- merge_sf(
 # st_write(worldpopconsunadj2020_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
+### Yearly insolation time
+
+> See [this file](aux/insolation-time-GRASS-GIS.Rmd) for the methodology
+> used to create the value layer.
+
+``` r
+# Base name
+base_name <- 'yearly_insolation_time_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'yearly_insolation_time_#_res_7.gpkg')
+yearlyinstime_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(yearlyinstime_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
+### Distance to water bodies and wetlands (ESA)
+
+Esta fuente se obtuvo promediando las distancias (en metros) a cuerpos
+de aguas interiores, humedales y mar, sobre hexágonos H3 de resoluciones
+4 a 7 sobre República Dominicana. El procedimiento se describe a
+continuación. Primero, el mapa de cobertura global de la Agencia
+Espacial Europea (ESA), v200, a una resolución original de 10 m, fue
+remuestreado a 100 m. Posteriormente, se realizó una reclasificación de
+las coberturas de interés (cuerpos de aguas interiores, humedales y
+mar), convirtiéndolas a una máscara de valor 1. Con algoritmos de
+estimación de longitudes, se obtuvieron las distancias de cada píxel de
+República Dominicana respecto de la mancha de interés más próxima, lo
+cual generó la superficie continua de valores de distancias. Finalmente,
+las distancias fueron promediadas por hexágonos H3 (resoluciones 4 a 7),
+usando algoritmos de estadística zonal (“*reducers*”). El proceso se
+realizó en Google Earth Engine, con apoyo de la API Python y el paquete
+geemap.
+
+``` r
+# Base name
+base_name <- 'distance_to_water_bodies_wetlands_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'distance_to_water_bodies_wetlands_#_res_7.gpkg')
+dwbw_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(dwbw_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
+### Temperature seasonality (st. dev.), according to Izzo et al.
+
+> See [this
+> file](aux/temperatura_precepitacion_Izzo/temperatura_precepitacion_Izzo.Rmd)
+> for the methodology used to create the value layer.
+
+``` r
+# Base name
+base_name <- 'temperature_stdev_seasonality_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'temperature_stdev_seasonality_#_res_7.gpkg')
+tempstdev_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(tempstdev_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
+### Precipitation seasonality (CV), according to Izzo et al.
+
+> See [this
+> file](aux/temperatura_precepitacion_Izzo/temperatura_precepitacion_Izzo.Rmd)
+> for the methodology used to create the value layer.
+
+``` r
+# Base name
+base_name <- 'precipitation_cv_seasonality_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'precipitation_cv_seasonality_#_res_7.gpkg')
+precipcv_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(precipcv_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
 ## Merge all the GeoPackages in one
 
 ``` r
@@ -1470,7 +1732,12 @@ merge_quant_qual_l <- map(4:7, function(res) {
         paste0('hansen_gfc_v19_ptc_y2000_res_', res, '.gpkg'),
         paste0('hansen_gfc_v19_ly_res_', res, '_unnested.gpkg'),
         paste0('distance_to_osm_roads_res_', res, '.gpkg'),
-        paste0('worldpop_gp_constrained_unadj_2020_res_', res, '.gpkg'))),
+        paste0('worldpop_gp_constrained_unadj_2020_res_', res, '.gpkg'),
+        paste0('yearly_insolation_time_res_', res, '.gpkg'),
+        paste0('distance_to_water_bodies_wetlands_res_', res, '.gpkg'),
+        paste0('temperature_stdev_seasonality_res_', res, '.gpkg'),
+        paste0('precipitation_cv_seasonality_res_', res, '.gpkg')
+        )),
     suffixes[2:length(suffixes)],
     st_read_rename, first = F)
   merge_quant_qual <- Reduce(
@@ -1490,7 +1757,7 @@ map(1:4, function(x)
 # All variables!!
 # jpeg('img/all_vars_res_5.jpg', width = 3840, height = 2032, res = 250)
 all_vars_res_5 <- merge_quant_qual_l$`H3 resolution: 5` %>%
-  select(-matches(c('hex_id| base|^WCL bio19'))) %>%
+  select(-matches(c('hex_id| base|^WCL bio1[8,9]'))) %>%
   pivot_longer(names_to = 'variable', values_to = 'value', -geometry) %>%
   tm_shape() +
   tm_fill(col='value', palette = "BrBG", size = 0.1, style = 'fisher', legend.is.portrait = T) +
