@@ -111,7 +111,8 @@ A modo de demostración, probé estos algoritmos con conjuntos de datos pequeño
 # Number of variables by source
 suffixes <- c('ESA', 'CGL', 'GSL', 'GHH', 'WCL', 'CH-BIO', 'G90', 'G90-GEOM',
               'CGIAR-ELE', 'GFC-PTC YEAR 2000', 'GFC-LOSS', 'OSM-DIST',
-              'GP-CONSUNadj YEAR 2020', 'YINSOLTIME')
+              'GP-CONSUNadj YEAR 2020', 'YINSOLTIME', 'WBW-DIST',
+              'TSEASON-IZZO', 'PSEASON-IZZO')
 merge_quant_qual_l <- readRDS('out/list_with_all_sources_all_resolution.RDS')
 uniq_names <- unique(unlist(sapply(merge_quant_qual_l, colnames, simplify = F)))
 uniq_names_thematic <- grep('hex_id| base$|^geometry$', uniq_names,
@@ -208,6 +209,7 @@ In this section, I include the code used to convert the key + frequencies dictio
 ```{r}
 library(tmap)
 library(tidyverse)
+library(sf)
 source('R/unnest-qual-zonal-stats.R')
 source('R/merge-sf.R')
 source('R/st-read-rename-cols-based-on-prefix.R')
@@ -559,7 +561,7 @@ worldpopconsunadj2020_res7 <- merge_sf(
 
 ### Yearly insolation time
 
-> See [this file](aux/insolation-time-GRASS-GIS.Rmd) for methodology used to create the value layer.
+> See [this file](aux/insolation-time-GRASS-GIS.Rmd) for the methodology used to create the value layer.
 
 ```{r}
 # Base name
@@ -570,6 +572,53 @@ build_name <- function(x) gsub('#', x, 'yearly_insolation_time_#_res_7.gpkg')
 yearlyinstime_res7 <- merge_sf(
   paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
 # st_write(yearlyinstime_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
+### Distance to water bodies and wetlands (ESA)
+
+
+Esta fuente se obtuvo promediando las distancias (en metros) a cuerpos de aguas interiores, humedales y mar, sobre hexágonos H3 de resoluciones 4 a 7 sobre República Dominicana. El procedimiento se describe a continuación. Primero, el mapa de cobertura global de la Agencia Espacial Europea (ESA), v200, a una resolución original de 10 m, fue remuestreado a 100 m. Posteriormente, se realizó una reclasificación de las coberturas de interés (cuerpos de aguas interiores, humedales y mar), convirtiéndolas a una máscara de valor 1. Con algoritmos de estimación de longitudes, se obtuvieron las distancias de cada píxel de República Dominicana respecto de la mancha de interés más próxima, lo cual generó la superficie continua de valores de distancias. Finalmente, las distancias fueron promediadas por hexágonos H3 (resoluciones 4 a 7), usando algoritmos de estadística zonal ("*reducers*"). El proceso se realizó en Google Earth Engine, con apoyo de la API Python y el paquete geemap.
+
+
+```{r}
+# Base name
+base_name <- 'distance_to_water_bodies_wetlands_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'distance_to_water_bodies_wetlands_#_res_7.gpkg')
+dwbw_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(dwbw_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
+### Temperature seasonality (st. dev.), according to Izzo et al.
+
+> See [this file](aux/temperatura_precepitacion_Izzo/temperatura_precepitacion_Izzo.Rmd) for the methodology used to create the value layer.
+
+```{r}
+# Base name
+base_name <- 'temperature_stdev_seasonality_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'temperature_stdev_seasonality_#_res_7.gpkg')
+tempstdev_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(tempstdev_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
+```
+
+### Precipitation seasonality (CV), according to Izzo et al.
+
+> See [this file](aux/temperatura_precepitacion_Izzo/temperatura_precepitacion_Izzo.Rmd) for the methodology used to create the value layer.
+
+```{r}
+# Base name
+base_name <- 'precipitation_cv_seasonality_res_'
+
+# Merge res_7 gpkg
+build_name <- function(x) gsub('#', x, 'precipitation_cv_seasonality_#_res_7.gpkg')
+precipcv_res7 <- merge_sf(
+  paste0(results_path, c(build_name('1'), build_name('2'), build_name('3'))))
+# st_write(precipcv_res7, paste0(results_path, base_name, '7.gpkg'), delete_dsn = T)
 ```
 
 ## Merge all the GeoPackages in one
@@ -596,7 +645,11 @@ merge_quant_qual_l <- map(4:7, function(res) {
         paste0('hansen_gfc_v19_ly_res_', res, '_unnested.gpkg'),
         paste0('distance_to_osm_roads_res_', res, '.gpkg'),
         paste0('worldpop_gp_constrained_unadj_2020_res_', res, '.gpkg'),
-        paste0('yearly_insolation_time_res_', res, '.gpkg'))),
+        paste0('yearly_insolation_time_res_', res, '.gpkg'),
+        paste0('distance_to_water_bodies_wetlands_res_', res, '.gpkg'),
+        paste0('temperature_stdev_seasonality_res_', res, '.gpkg'),
+        paste0('precipitation_cv_seasonality_res_', res, '.gpkg')
+        )),
     suffixes[2:length(suffixes)],
     st_read_rename, first = F)
   merge_quant_qual <- Reduce(

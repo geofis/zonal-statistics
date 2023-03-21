@@ -1,0 +1,86 @@
+---
+title: "Coeficiente de variación de T y P"
+author: "Michela Izzo<br>José Martínez"
+output:
+  # bookdown::github_document2:
+  #   number_sections: false
+  #   fig_caption: yes
+  bookdown::html_document2:
+    number_sections: false
+    code_folding: hide
+    fig_caption: yes
+editor_options: 
+  chunk_output_type: console
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  cache = F, 
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE)
+```
+
+## Paquetes
+
+```{r}
+# library(raster)
+library(rts)
+library(terra)
+```
+
+## Archivos
+
+```{r}
+ruta <- 'fuentes'
+lista <- list.files(path = ruta, pattern='bis.img$', full.names = T)
+lista_tm <- gtools::mixedsort(grep('[0-9]*tm.*', lista, value = T))
+lista_pr <- gtools::mixedsort(grep('[0-9]*_p.*', lista, value = T))
+```
+
+## Series temporales
+
+### Desviación estándar de las temperaturas medias mensuales
+
+- Paquete terra
+
+```{r}
+library(terra)
+tm <- rast(lista_tm)
+tm_stdev_terra <- stdev(tm, na.rm = T, pop = FALSE)
+tm_stdev_terra <- project(tm_stdev_terra, 'EPSG:4326') 
+writeRaster(tm_stdev_terra, 'temperatura_sd_terra.tif', overwrite = TRUE)
+```
+
+- Paquete raster
+
+```{r}
+library(raster)
+tm <- stack(lista_tm)
+tm_stdev_raster <- calc(tm, fun = sd, na.rm = TRUE)
+tm_stdev_raster <- projectRaster(tm_stdev_raster, crs = "+init=EPSG:4326")
+writeRaster(tm_stdev_raster, 'temperatura_sd_raster.tif', overwrite = TRUE)
+```
+
+### Coeficiente de variación de las precipitaciones mensuales
+
+- Paquete terra
+
+```{r}
+library(terra)
+pr <- rast(lista_pr)
+pr_cv_terra <- (stdev(pr, na.rm = T, pop = FALSE)/mean(pr, na.rm = TRUE))*100
+pr_cv_terra <- project(pr_cv_terra, 'EPSG:4326') 
+writeRaster(pr_cv_terra, 'precipitacion_cv_terra.tif', overwrite = TRUE)
+```
+
+- Paquete raster
+
+```{r}
+library(raster)
+pr <- stack(lista_pr)
+pr_cv_raster <- calc(pr, fun = cv, na.rm = TRUE)
+pr_cv_raster <- projectRaster(pr_cv_raster, crs = "+init=EPSG:4326")
+writeRaster(pr_cv_raster, 'precipitacion_cv_raster.tif', overwrite = TRUE)
+```
